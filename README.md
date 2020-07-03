@@ -12,7 +12,7 @@ Output = Musical composition of that Synthesia video
 ---- What is this project? In detail:
 The script processes a .mp4 file through OpenCV library to detect pixels falling through a detection bar.
 
-These pixels are converted to actual notes through a dictionary (which required me to literally count "Pixel 360 = G-3" ... you're welcome)
+These pixels are converted to actual notes through a dictionary (which required me to literally count "Pixel 340 = G-3" ... you're welcome)
 
 Note durations are computed based on a difference to the next note being played --- through difference in the frame at which both these notes get played.
 
