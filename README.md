@@ -63,7 +63,7 @@ I wish you the best of luck if you are trying to adapt this file to your video!
 - Very likely the measures will be wrong (Eg: Notes are truncated or put into the wrong measures)
 - As a result of measures being wrong -- Notes will be completely missing from the score (void and gone)
 
-2) I'm releasing this code as a "please help me improve" gesture as I'm only a hobby programmer at the moment!
+2) I'm releasing this code as a "please help me improve" gesture as I'm only a hobby programmer at the moment! Please give me input and help me improve as a programmer (or maybe even give me a job :p)
 
 3) On that note -- I've used software/packages such as OpenCV, Mingus, and LilyPond (beyond the basic Python packages of pandas and numpy). 
 Please respect their license agreements when using mine or any of their scripts/products!
