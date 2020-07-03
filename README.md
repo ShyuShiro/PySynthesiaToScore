@@ -1,4 +1,4 @@
-# PySynthesiaToScore 7/3/2020 -- Brandon Tran - bjongtran@gmail.com (ShyuShiro)
+# PySynthesiaToScore 7/3/2020 -- Brandon Tran (ShyuShiro)
 Generating musical compositions from Synthesia mp4 videos
 
 Hi! This was a passion project birthed from my desire to play a song from my childhood named "Above the Treetops" from Maplestory.
