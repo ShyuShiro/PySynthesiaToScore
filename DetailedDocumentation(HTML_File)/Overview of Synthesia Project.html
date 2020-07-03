@@ -13084,7 +13084,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -13159,15 +13159,18 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">green</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">([[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span> <span class="p">]]])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Utilize BGR scale to create pure green and blue colors</span>
+<span class="n">green</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">([[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span> <span class="p">]]])</span>
 <span class="n">blue</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">([[[</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">]]])</span>
 
+<span class="c1">#Convert to HSV scale</span>
 <span class="n">hsv_green</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">green</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2HSV</span><span class="p">)</span>
 <span class="n">hsv_blue</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">blue</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2HSV</span><span class="p">)</span>
 
+<span class="c1">#Printout the HSV version of pure green and pure blue</span>
 <span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;Green in HSV: &quot;</span><span class="p">,</span><span class="n">hsv_green</span> <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;Blue in HSV: &quot;</span><span class="p">,</span><span class="n">hsv_blue</span> <span class="p">)</span>
 </pre></div>
@@ -13206,6 +13209,36 @@ Blue in HSV:  [[[120 255 255]]]
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cropped</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">w</span><span class="p">]</span> <span class="c1">#Start = 250 == A random height at which to draw the bounding box</span>
+<span class="n">hsv_crop</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">cropped</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2HSV</span><span class="p">)</span> <span class="c1">#Convert bounding box to HSV scale</span>
+
+    <span class="c1">#Green filter</span>
+    <span class="n">grn_lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">30</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">100</span><span class="p">])</span> <span class="c1">#Lower bound of &quot;Green&quot; color</span>
+    <span class="n">grn_upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">80</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">])</span> <span class="c1">#upr bound</span>
+    <span class="n">grn_mask_crop</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span><span class="n">hsv_crop</span><span class="p">,</span><span class="n">grn_lower</span><span class="p">,</span><span class="n">grn_upper</span><span class="p">)</span> <span class="c1">#Taking the bounding box... Find only green notes</span>
+    
+    <span class="c1">#Blue filter</span>
+    <span class="n">blu_lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">75</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">120</span><span class="p">])</span>
+    <span class="n">blu_upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">140</span><span class="p">,</span><span class="mi">230</span><span class="p">,</span><span class="mi">250</span><span class="p">])</span>
+    <span class="n">blu_mask_crop</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span><span class="n">hsv_crop</span><span class="p">,</span><span class="n">blu_lower</span><span class="p">,</span><span class="n">blu_upper</span><span class="p">)</span> <span class="c1">#&quot;     &quot; Find only blue notes</span>
+
+<span class="c1">#These video feeds are the ones shown in the above images with only green or blue notes --- They serve for debug/visual</span>
+    <span class="c1">#interpretation purposes only -- They do not contribute any usefulness to the bounding box detection code</span>
+<span class="n">hsv</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2HSV</span><span class="p">)</span> <span class="c1">#Convert entire video feed to HSV scale</span>
+<span class="n">grn_mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span><span class="n">hsv</span><span class="p">,</span><span class="n">grn_lower</span><span class="p">,</span><span class="n">grn_upper</span><span class="p">)</span> <span class="c1">#Mask the HSV feed to filter for only green (Visual purposes only)</span>
+<span class="n">blu_mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span><span class="n">hsv</span><span class="p">,</span><span class="n">blu_lower</span><span class="p">,</span><span class="n">blu_upper</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13213,8 +13246,21 @@ Blue in HSV:  [[[120 255 255]]]
 
 </div>
 </div>
-</div>coord_right=cv2.findNonZero(grn_mask_crop) #Pixel locations of where there are green
-coord_left=cv2.findNonZero(blu_mask_crop) #Pixel locations of where there are blue
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">coord_right</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">findNonZero</span><span class="p">(</span><span class="n">grn_mask_crop</span><span class="p">)</span> <span class="c1">#Pixel locations of where there are green</span>
+<span class="n">coord_left</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">findNonZero</span><span class="p">(</span><span class="n">blu_mask_crop</span><span class="p">)</span> <span class="c1">#Pixel locations of where there are blue</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13751,24 +13797,37 @@ $$ np.round(\frac{frame_{i+1}-frame_{i}}{c})*c $$<p>In the above equation $c = 0
 
 </div>
 </div>
-</div>#Last step -- Dictionary convert note length to note type (eigth/quarter etc)
-LengthToNote = dict({0.0625:16, #sixteenth
-                     0.125:8, #Eighth
-                     0.1875:8,
-                     0.25:4, #Quarter
-                     0.3125:4, #Round to dotted half
-                     0.375:value.dots(4), #Dotted quarter
-                     0.4375:value.dots(4), #Round to dotted half
-                     0.5:2, #Half
-                     0.5625:2, #Round to half
-                     0.625:2, #Round to half
-                     0.6875:2, #Round to half
-                     0.75:value.dots(2), #Dotted half
-                     0.8125:value.dots(2), #Round to dotted half
-                     0.875:value.dots(2), #Round to dotted half
-                     0.9375:value.dots(2), #Round to dotted half                
-                     1:1}) #Whole
-df["Diff"] = df["Diff"].map(LengthToNote) #Map to note values for Mingus
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Last step -- Dictionary convert note length to note type (eigth/quarter etc)</span>
+<span class="n">LengthToNote</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">({</span><span class="mf">0.0625</span><span class="p">:</span><span class="mi">16</span><span class="p">,</span> <span class="c1">#sixteenth</span>
+                     <span class="mf">0.125</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span> <span class="c1">#Eighth</span>
+                     <span class="mf">0.1875</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span>
+                     <span class="mf">0.25</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="c1">#Quarter</span>
+                     <span class="mf">0.3125</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="c1">#Round to dotted half</span>
+                     <span class="mf">0.375</span><span class="p">:</span><span class="n">value</span><span class="o">.</span><span class="n">dots</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="c1">#Dotted quarter</span>
+                     <span class="mf">0.4375</span><span class="p">:</span><span class="n">value</span><span class="o">.</span><span class="n">dots</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="c1">#Round to dotted half</span>
+                     <span class="mf">0.5</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="c1">#Half</span>
+                     <span class="mf">0.5625</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="c1">#Round to half</span>
+                     <span class="mf">0.625</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="c1">#Round to half</span>
+                     <span class="mf">0.6875</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="c1">#Round to half</span>
+                     <span class="mf">0.75</span><span class="p">:</span><span class="n">value</span><span class="o">.</span><span class="n">dots</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="c1">#Dotted half</span>
+                     <span class="mf">0.8125</span><span class="p">:</span><span class="n">value</span><span class="o">.</span><span class="n">dots</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="c1">#Round to dotted half</span>
+                     <span class="mf">0.875</span><span class="p">:</span><span class="n">value</span><span class="o">.</span><span class="n">dots</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="c1">#Round to dotted half</span>
+                     <span class="mf">0.9375</span><span class="p">:</span><span class="n">value</span><span class="o">.</span><span class="n">dots</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="c1">#Round to dotted half                </span>
+                     <span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span> <span class="c1">#Whole</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;Diff&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Diff&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">LengthToNote</span><span class="p">)</span> <span class="c1">#Map to note values for Mingus</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13842,19 +13901,32 @@ df["Diff"] = df["Diff"].map(LengthToNote) #Map to note values for Mingus
 
 </div>
 </div>
-</div>#Creating tracks --- Left
-t_l = Track()
-for i in set(df["Measure"].unique()[:-1]):
-    b = Bar(key=keysig)
-    subset = df[df["Measure"]==i]
-    for j,k in zip(subset["Notes_l"],subset["Diff"]):
-        if len(j)>0: #If note is not NaN
-            nc = NoteContainer(j) #Define the note
-            b.place_notes(nc,k) #Add note to bar with length
-        else:
-            b.place_notes(None,k) #Place a rest note the lenght of the other hand's note
-    t_l + b
-LithHarbor_ly_left = LilyPond.from_Track(t_l) #Create .ly file
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Creating tracks --- Left</span>
+<span class="n">t_l</span> <span class="o">=</span> <span class="n">Track</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Measure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">Bar</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">keysig</span><span class="p">)</span>
+    <span class="n">subset</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Measure&quot;</span><span class="p">]</span><span class="o">==</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">subset</span><span class="p">[</span><span class="s2">&quot;Notes_l&quot;</span><span class="p">],</span><span class="n">subset</span><span class="p">[</span><span class="s2">&quot;Diff&quot;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span> <span class="c1">#If note is not NaN</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="n">NoteContainer</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="c1">#Define the note</span>
+            <span class="n">b</span><span class="o">.</span><span class="n">place_notes</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span><span class="n">k</span><span class="p">)</span> <span class="c1">#Add note to bar with length</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">b</span><span class="o">.</span><span class="n">place_notes</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="n">k</span><span class="p">)</span> <span class="c1">#Place a rest note the lenght of the other hand&#39;s note</span>
+    <span class="n">t_l</span> <span class="o">+</span> <span class="n">b</span>
+<span class="n">LithHarbor_ly_left</span> <span class="o">=</span> <span class="n">LilyPond</span><span class="o">.</span><span class="n">from_Track</span><span class="p">(</span><span class="n">t_l</span><span class="p">)</span> <span class="c1">#Create .ly file</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13883,23 +13955,36 @@ LithHarbor_ly_left = LilyPond.from_Track(t_l) #Create .ly file
 
 </div>
 </div>
-</div>header = '\\header { title = "' + title + '" composer = "' + author + '" opus = "" } '
-combine_test = header + "rhMusic =  {" + LithHarbor_ly_right + "}"
-combine_test = combine_test + "lhMusic =  {" + LithHarbor_ly_left + "}"
-combine_test = combine_test + """
-\\score {
-  \\new PianoStaff <<
-    \\new Staff = "RH"  <<
-      \\rhMusic
-    >>
-    \\new Staff = "LH" <<
-      \\clef "bass"
-      \\lhMusic
-    >>
-  >>
-}"""
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">header { title = &quot;&#39;</span> <span class="o">+</span> <span class="n">title</span> <span class="o">+</span> <span class="s1">&#39;&quot; composer = &quot;&#39;</span> <span class="o">+</span> <span class="n">author</span> <span class="o">+</span> <span class="s1">&#39;&quot; opus = &quot;&quot; } &#39;</span>
+<span class="n">combine_test</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="s2">&quot;rhMusic =  {&quot;</span> <span class="o">+</span> <span class="n">LithHarbor_ly_right</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span>
+<span class="n">combine_test</span> <span class="o">=</span> <span class="n">combine_test</span> <span class="o">+</span> <span class="s2">&quot;lhMusic =  {&quot;</span> <span class="o">+</span> <span class="n">LithHarbor_ly_left</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span>
+<span class="n">combine_test</span> <span class="o">=</span> <span class="n">combine_test</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="se">\\</span><span class="s2">score {</span>
+<span class="s2">  </span><span class="se">\\</span><span class="s2">new PianoStaff &lt;&lt;</span>
+<span class="s2">    </span><span class="se">\\</span><span class="s2">new Staff = &quot;RH&quot;  &lt;&lt;</span>
+<span class="s2">      </span><span class="se">\\</span><span class="s2">rhMusic</span>
+<span class="s2">    &gt;&gt;</span>
+<span class="s2">    </span><span class="se">\\</span><span class="s2">new Staff = &quot;LH&quot; &lt;&lt;</span>
+<span class="s2">      </span><span class="se">\\</span><span class="s2">clef &quot;bass&quot;</span>
+<span class="s2">      </span><span class="se">\\</span><span class="s2">lhMusic</span>
+<span class="s2">    &gt;&gt;</span>
+<span class="s2">  &gt;&gt;</span>
+<span class="s2">}&quot;&quot;&quot;</span>
 
-LilyPond.to_png(combine_test, outputname) #Create png
+<span class="n">LilyPond</span><span class="o">.</span><span class="n">to_png</span><span class="p">(</span><span class="n">combine_test</span><span class="p">,</span> <span class="n">outputname</span><span class="p">)</span> <span class="c1">#Create png</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13916,18 +14001,31 @@ LilyPond.to_png(combine_test, outputname) #Create png
 
 </div>
 </div>
-</div>#### Create midi file:
-#Combine Notes_r and Notes_l from the df into 1 congomerate
-combined_notes = []
-for i in range(df.shape[0]):
-    try:
-        combined_notes.append(df.iloc[i]["Notes_l"]+df.iloc[i]["Notes_r"])
-    except:
-        if df.iloc[i]["Notes_l"]!="":
-            combined_notes.append(df.iloc[i]["Notes_l"])
-        else:
-            combined_notes.append(df.iloc[i]["Notes_r"])
-df["Notes_both"] = combined_notes
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#### Create midi file:</span>
+<span class="c1">#Combine Notes_r and Notes_l from the df into 1 congomerate</span>
+<span class="n">combined_notes</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">combined_notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;Notes_l&quot;</span><span class="p">]</span><span class="o">+</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;Notes_r&quot;</span><span class="p">])</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;Notes_l&quot;</span><span class="p">]</span><span class="o">!=</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">combined_notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;Notes_l&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">combined_notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;Notes_r&quot;</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;Notes_both&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_notes</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13935,16 +14033,29 @@ df["Notes_both"] = combined_notes
 
 </div>
 </div>
-</div>#Now create a track by adding these notes from both hands
-t_both = Track()
-for i in set(df["Measure"].unique()[:-1]):
-    b = Bar(key=keysig)
-    subset = df[df["Measure"]==i]
-    for j,k in zip(subset["Notes_both"],subset["Diff"]):
-        if j: #If note is not NaN
-            nc = NoteContainer(j) #Define the note
-            b.place_notes(nc,k) #Add note to bar with length
-    t_both + b
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Now create a track by adding these notes from both hands</span>
+<span class="n">t_both</span> <span class="o">=</span> <span class="n">Track</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Measure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">Bar</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">keysig</span><span class="p">)</span>
+    <span class="n">subset</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Measure&quot;</span><span class="p">]</span><span class="o">==</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">subset</span><span class="p">[</span><span class="s2">&quot;Notes_both&quot;</span><span class="p">],</span><span class="n">subset</span><span class="p">[</span><span class="s2">&quot;Diff&quot;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">j</span><span class="p">:</span> <span class="c1">#If note is not NaN</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="n">NoteContainer</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="c1">#Define the note</span>
+            <span class="n">b</span><span class="o">.</span><span class="n">place_notes</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span><span class="n">k</span><span class="p">)</span> <span class="c1">#Add note to bar with length</span>
+    <span class="n">t_both</span> <span class="o">+</span> <span class="n">b</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13954,22 +14065,35 @@ for i in set(df["Measure"].unique()[:-1]):
 <h2 id="Hyperparameters">Hyperparameters<a class="anchor-link" href="#Hyperparameters">&#182;</a></h2>
 </div>
 </div>
-</div>###Hyperparameters
-debug = False #For output from Pixel <-> Note dictionaries
-vod_name = "Above the Treetops - Lith Harbor Synthesia.mp4" #Name of the file to read (.mp4!)
-fps = 1 #Speed of the video processing --- Inverse btw .. lower is faster!
-measure_length = 57.2 #The number of frames that yield a full measure
-start = 230 #Defining the height of the crop region
-keysig = "D" #Defining the key signature (in Major only!)
-bpm = 120 #Defining the BPM for the midi file -- Has no impact to png/pdf generation
-title = "Above the Treetops - Lith Harbor" #Title displayed above the score
-author = "Leegle" #Author displayed at the top right of the score
-outputname = "LithHarbor" #Name to use for all the output files ... eg: LithHarbor.png/.mid/.pdf
-#Mask filter parameters
-blu_lower = np.array([75,20,120]) #Lower bound of the Left hand
-blu_upper = np.array([140,230,250]) #Upper bound of the Left hand
-grn_lower = np.array([30,90,100]) #Lower bound of the Right hand
-grn_upper = np.array([80,255,255]) #Upper bound of the Right hand
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">###Hyperparameters</span>
+<span class="n">debug</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1">#For output from Pixel &lt;-&gt; Note dictionaries</span>
+<span class="n">vod_name</span> <span class="o">=</span> <span class="s2">&quot;Above the Treetops - Lith Harbor Synthesia.mp4&quot;</span> <span class="c1">#Name of the file to read (.mp4!)</span>
+<span class="n">fps</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#Speed of the video processing --- Inverse btw .. lower is faster!</span>
+<span class="n">measure_length</span> <span class="o">=</span> <span class="mf">57.2</span> <span class="c1">#The number of frames that yield a full measure</span>
+<span class="n">start</span> <span class="o">=</span> <span class="mi">230</span> <span class="c1">#Defining the height of the crop region</span>
+<span class="n">keysig</span> <span class="o">=</span> <span class="s2">&quot;D&quot;</span> <span class="c1">#Defining the key signature (in Major only!)</span>
+<span class="n">bpm</span> <span class="o">=</span> <span class="mi">120</span> <span class="c1">#Defining the BPM for the midi file -- Has no impact to png/pdf generation</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Above the Treetops - Lith Harbor&quot;</span> <span class="c1">#Title displayed above the score</span>
+<span class="n">author</span> <span class="o">=</span> <span class="s2">&quot;Leegle&quot;</span> <span class="c1">#Author displayed at the top right of the score</span>
+<span class="n">outputname</span> <span class="o">=</span> <span class="s2">&quot;LithHarbor&quot;</span> <span class="c1">#Name to use for all the output files ... eg: LithHarbor.png/.mid/.pdf</span>
+<span class="c1">#Mask filter parameters</span>
+<span class="n">blu_lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">75</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">120</span><span class="p">])</span> <span class="c1">#Lower bound of the Left hand</span>
+<span class="n">blu_upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">140</span><span class="p">,</span><span class="mi">230</span><span class="p">,</span><span class="mi">250</span><span class="p">])</span> <span class="c1">#Upper bound of the Left hand</span>
+<span class="n">grn_lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">30</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">100</span><span class="p">])</span> <span class="c1">#Lower bound of the Right hand</span>
+<span class="n">grn_upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">80</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">])</span> <span class="c1">#Upper bound of the Right hand</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
