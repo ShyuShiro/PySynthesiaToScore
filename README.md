@@ -1,4 +1,4 @@
-# PySynthesiaToScore 7/3/2020 -- Brandon Tran (ShyuShiro)
+# PySynthesiaToScore 7/3/2020 -- Brandon Tran - bjongtran@gmail.com (ShyuShiro)
 Generating musical compositions from Synthesia mp4 videos
 
 Hi! This was a passion project birthed from my desire to play a song from my childhood named "Above the Treetops" from Maplestory.
@@ -66,4 +66,4 @@ I wish you the best of luck if you are trying to adapt this file to your video!
 2) On that note -- I've used software/packages such as OpenCV, Mingus, and LilyPond (beyond the basic Python packages of pandas and numpy). 
 Please respect their license agreements when using mine or any of their scripts/products!
 
-3) I'm releasing this code as a "please help me improve" gesture as I'm only a hobby programmer at the moment! Please give me input and help me improve as a programmer (or maybe even give me a job :p)
+3) I'm releasing this code as a "please help me improve" gesture as I'm only a hobby programmer at the moment! Please give me input and help me improve as a programmer.
